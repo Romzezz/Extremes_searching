@@ -213,7 +213,6 @@ def lagrange():
 # In[16]:
 
 
-lagrange()
 
 
 # In[ ]:
