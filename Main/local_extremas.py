@@ -55,6 +55,7 @@ def _show_extrema(func, points):
     #ax.set_zlim(-2, 2)
     ax.scatter(x, y, z, c='red', s=50, alpha=1)
     ax.plot_surface(x_linsp, y_linsp, z_linsp, alpha=0.6)
+    plt.show()
 
 
 # In[3]:
