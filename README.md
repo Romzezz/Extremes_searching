@@ -5,14 +5,24 @@
 		<h5>Пример решения задач можно найти в <a href="https://colab.research.google.com/drive/1xLtdHvt_uzSe5WTcJyDnWl29NNuvlmEE?usp=sharing">Google Colab</a> </h5>
 		<h3>1. Тестируем функцию поиска локальных экстремумов функции двух переменных: </h3>
 		<h5>Ввод параметров функции: </h5> 
-		<img src="Images/Screen Shot 2022-03-06 at 22.23.29.png"
+		<img src="Images/extremas1.1.png"
 		     height="110px">
 		<h5>Вывод графика: </h5> 
-		<img src="Images/Screen Shot 2022-03-06 at 22.24.37.png"
+		<img src="Images/extremas1.2.png"
 		     height="322px">
 		<h5>Вывод экстремумов функции с указанием типа : </h5> 
-		<img src="Images/Screen Shot 2022-03-06 at 22.25.23.png"
+		<img src="Images/extremas1.3.png"
 		     height="20px">
+		<h3>2. Тестируем функцию поиска локальных экстремумов функции двух переменных с ограничениями (метод Лагранжа): </h3>
+		<h5>Ввод параметров функции: </h5> 
+		<img src="Images/lagrange1.1.png"
+		     height="150px">
+		<h5>Вывод графика: </h5> 
+		<img src="Images/lagrange1.2.png"
+		     height="322px">
+		<h5>Вывод экстремумов функции с указанием типа : </h5> 
+		<img src="Images/lagrange1.3.png"
+		     height="400px">
 		Участники проекта
 		<ul>
 		<h5>
