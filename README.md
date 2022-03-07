@@ -3,7 +3,7 @@
 <html>
 	<body>
 		<h5>Пример решения задач можно найти в <a href="https://colab.research.google.com/drive/1xLtdHvt_uzSe5WTcJyDnWl29NNuvlmEE?usp=sharing">Google Colab</a> </h5>
-		<h3>1. Тестируем функцию поиска локальных экстремумов функции двух переменных: </h3>
+		<h3>1. Тестируем функцию поиска локальныx экстремумов функции двух переменных: </h3>
 		<h5>Ввод параметров функции: </h5> 
 		<img src="Images/extremas1.1.png"
 		     height="110px">
