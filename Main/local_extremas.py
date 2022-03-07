@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[13]:
+# In[1]:
 
 
 get_ipython().run_line_magic('matplotlib', 'notebook')
@@ -11,7 +11,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 
-# In[14]:
+# In[21]:
 
 
 def _get_hessian(func, args):
@@ -27,13 +27,22 @@ def _take_input(ask_restriction=False):
     if is_bounded:
         bounds = dict()
         for var in result['varnames']:
-            bounds[var] = list(map(int, input(f'Введите допустимые интервалы по {var}: ').split()))
+            bounds[var] = list(map(float, input(f'Введите допустимые интервалы по {var}: ').split()))
             
     if ask_restriction:
         result['restriction'] = input('Введите ограничивающую функцию: ')
         
     result['bounds'] = bounds
             
+    return result
+
+def _make_real(points, args):
+    result = []
+    for point in list(points):
+        for arg in args:
+            if point[arg].has(sympy.I):
+                point[arg] = sympy.re(point[arg])
+        result.append(point)
     return result
 
 
@@ -117,7 +126,7 @@ def _plot(func, points, bounds=None, restriction=None):
     fig.show()
 
 
-# In[15]:
+# In[24]:
 
 
 def find_local_extremas():
@@ -137,30 +146,21 @@ def find_local_extremas():
     bounds = _input['bounds']
     partial_first = [sympifyed.diff(arg) for arg in args]
     stationary_points = sympy.solve(partial_first, args, dict=True)
+    stationary_points = _make_real(stationary_points, args)
     
+    hesse = _get_hessian(sympifyed, args)
+    for point in list(stationary_points):
+        for arg in args:
+            point[arg] = float(point[arg])
+            point['F'] = float(sympifyed.subs(point))
+            point['type'] = _check_point(hesse, point)
+        
     if bounds:
         assert isinstance(bounds, dict), 'ограничения заданы неверно'
         stationary_points = _filter_points(args, stationary_points, bounds)
         
     if not stationary_points:
         print('Нет стационарных точек')
-    
-    hesse = _get_hessian(sympifyed, args)
-    points_to_remove = []
-    for point in list(stationary_points):
-        contains_complex = False
-        for arg in args:
-            if point[arg].has(sympy.I):
-                contains_complex = True
-        if contains_complex:
-            points_to_remove.append(point)
-        else:
-            for arg in args:
-                point[arg] = float(point[arg])
-                point['F'] = float(sympifyed.subs(point))
-                point['type'] = _check_point(hesse, point)
-    for point in points_to_remove:
-        stationary_points.remove(point)
         
     _plot(sympifyed, stationary_points, bounds=bounds)
     return stationary_points
@@ -190,33 +190,22 @@ def lagrange():
     lagrangian = func + lambda_*restriction
     partial_first = [lagrangian.diff(arg) for arg in args+[lambda_]]
     stationary_points = sympy.solve(partial_first, args+[lambda_], dict=True)
-        
-    
-    if bounds:
-        assert isinstance(bounds, dict), 'ограничения заданы неверно'
-        stationary_points = _filter_points(args, stationary_points, bounds)
-     
-    if not stationary_points:
-        print('Нет стационарных точек')
+    stationary_points = _make_real(stationary_points, args)
     
     hesse = _get_hessian(lagrangian, args)
     for point in stationary_points:
         for arg in args:
             point[arg] = float(point[arg])
-        point['F'] = float(func.subs(point))
-        point['type'] = _check_point(hesse, point)
+            point['F'] = float(func.subs(point))
+            point['type'] = _check_point(hesse, point)
+                
+    if bounds:
+        assert isinstance(bounds, dict), 'ограничения заданы неверно'
+        stationary_points = _filter_points(args, stationary_points, bounds)
+        
+    if not stationary_points:
+        print('Нет стационарных точек')
     
     _plot(func, stationary_points, restriction=restriction, bounds=bounds)
     return stationary_points
-
-
-# In[16]:
-
-
-
-
-# In[ ]:
-
-
-
 
