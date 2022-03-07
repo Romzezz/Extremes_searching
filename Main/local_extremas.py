@@ -15,10 +15,25 @@ import plotly.graph_objects as go
 
 
 def _get_hessian(func, args):
+    '''
+    Возвращает матрицу Гессе (вторых частных производных) входной функции по входным переменным.
+            Параметры:
+                    func (sympy.Expression): функция, по которой будут вычисляться частные производные
+                    args (list[sympy.Symbol]): список, состоящий из переменных, по которым будут браться производные
+            Возвращаемое значение:
+                    result (sympy.Matrix): Матрица Гессе
+    '''
     return sympy.Matrix([[func.diff(arg1, arg2) for arg1 in args] for arg2 in args])
 
 
 def _take_input(ask_restriction=False):
+    '''
+    Создаёт интерактивный ввод для пользователя и возвращает полученные данные в виде словаря.
+            Параметры:
+                    ask_restriction (bool): Если True, запрашивает у пользователя ограничивающую функцию
+            Возвращаемое значение:
+                    result (dict): Словарь, значениями которого являются введённые пользователем данные
+    '''
     result = dict()
     result['varnames'] = list(input(f"Введите названия переменных\nПрим. x y: ").split())
     result['func'] = input('Введите функцию\nПрим. x**2 + y**2: ')
@@ -37,6 +52,14 @@ def _take_input(ask_restriction=False):
     return result
 
 def _make_real(points, args):
+    '''
+    Функция проходит по всем входным точкам, и если у точки есть комплексное значение, оставляет только действительную часть 
+            Параметры:
+                    points (list): Список, состоящий из словарей (точек экстремумов)
+                    args (list[sympy.Symbol]): список названий координат точек
+            Возвращаемое значение:
+                    result (dict): Словарь, значениями которого являются введённые пользователем данные
+    '''
     result = []
     for point in list(points):
         for arg in args:
@@ -47,6 +70,14 @@ def _make_real(points, args):
 
 
 def _check_point(hesse, point):
+    '''
+    Функция делает вывод о типе экстремума входной точки с помощью определённости матрицы Гессе
+            Параметры:
+                    hesse (sympy.Matrix): Матрца Гессе
+                    point (dict): Точка, тип экстремума которой проверяется
+            Возвращаемое значение:
+                    str: Вывод о типе экстремума
+    '''
     substituted = hesse.subs(point)
     minor_dets = [substituted[:i, :i].det() for i in range(1, hesse.shape[0] + 1)]
     if all(det > 0 for det in minor_dets):
@@ -60,6 +91,15 @@ def _check_point(hesse, point):
     
     
 def _filter_points(args, points, bounds):
+    '''
+    Отбирает те точки, которые лежат в пределах входных ограничений
+            Параметры:
+                    args (list[sympy.Symbol]): список названий координат точек
+                    points (list): Список, состоящий из проверяемых точек
+                    bounds (dict): Словарь, ключами которого являются названия осей, а ограничения значениями
+            Возвращаемое значение:
+                    suitable: Список, состоящий из отобранных точек
+    '''
     suitable = []
     for point in points:
         is_suitable = True
@@ -72,6 +112,17 @@ def _filter_points(args, points, bounds):
     
     
 def _plot(func, points, bounds=None, restriction=None):
+    '''
+    Строит график входной и ограничивающей (если задана) функции отображает точки экстремумов на ней
+            Параметры:
+                    func (sympy.Expression): функция, по которой будет построен график
+                    points (list): Список, состоящий из точек экстремумов
+                    bounds (dict): Словарь, ключами которого являются названия осей, а значениями
+                                   ограничения, в пределах которого будет построен график
+                    restriction (sympy.Expression): Ограничивающая функция
+            Возвращаемое значение:
+                    None
+    '''
     args = list(func.free_symbols)
     arg1, arg2 = args
     if bounds:
@@ -131,9 +182,10 @@ def _plot(func, points, bounds=None, restriction=None):
 
 def find_local_extremas():
     """
-    varnames: ['x', 'y']
-    func: 'y*(x**2) + x*(y**3) - x*y'
-    bounds: {'x':[-10, 10], 'y': [-1, 1]} 
+    Запрашивает у пользователя входную функцию, её аргументы и ограничения (если есть)
+    Находит точки экстремумов функции, строит её график и отображает на нём найденные точки
+        Возвращаемое значение:
+                    stationary_points (list): Список, состоящий из найденных точек экстремумов
     """
     
     _input = _take_input()
@@ -168,10 +220,10 @@ def find_local_extremas():
 
 def lagrange():
     """
-    varnames: ['x', 'y']
-    func: 'x*y'
-    restriction: 'x**2 + 4*y**2 - 1'
-    bounds: {'x':[-10, 10], 'y': [-1, 1]} 
+    Запрашивает у пользователя входную функцию, её аргументы, ограничения (если есть) и ограничивающую функцию
+    Находит методом Лагранжа точки экстремумов функции, строит на графике исходную и ограничивающую функцию и отображает на найденные точки
+        Возвращаемое значение:
+                    stationary_points (list): Список, состоящий из найденных точек экстремумов
     """
     
     _input = _take_input(1)
